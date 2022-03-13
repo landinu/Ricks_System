@@ -13,10 +13,6 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = 'secret'
 api = Api(app)
 
-@app.before_first_request
-def create_tables():
-    db.create_all() # Unicamente crea las tablas que ve (los archivos que se importan)
-
 jwt = JWT(app,authenticate,identity) # New Endpoint => /auth (se envia un usuario y un password)
 
 # items = []
@@ -28,9 +24,6 @@ api.add_resource(ItemList,'/items')
 api.add_resource(UserRegister,'/register')
 api.add_resource(Store,'/store/<string:name>')
 api.add_resource(StoreList,'/stores')
-
-from db import db
-db.init_app(app)
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True) # Arroja mensajes de error útiles para identificar el problema
