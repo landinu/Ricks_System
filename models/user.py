@@ -8,16 +8,16 @@ class UserModel(db.Model):
     id = db.Column(db.Integer,primary_key=True)
     username = db.Column(db.String(80))
     password = db.Column(db.String(80))
-    rol_id = db.Column(db.Integer,db.ForeignKey('roles.id'))
-    rol = db.relationship('RolModel')
+    role_id = db.Column(db.Integer,db.ForeignKey('roles.id')) # default=lector
+    #role = db.relationship('RoleModel')
 
-    def __init__ (self, username, password, rol_id):
+    def __init__ (self, username, password, role_id):
         self.username = username
         self.password = password
-        self.rol_id = rol_id
+        self.role_id = role_id
     
     def json(self):
-        return {'name':self.name, 'rol':self.rol_id}
+        return {'name':self.username, 'role':self.role_id}
 
     def save_to_db(self):
         db.session.add(self)
@@ -28,7 +28,7 @@ class UserModel(db.Model):
         db.session.commit()
 
     @classmethod
-    def find_by_username(cls,username):
+    def find_by_name(cls,username):
         return cls.query.filter_by(username=username).first()
 
     @classmethod

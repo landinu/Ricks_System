@@ -6,13 +6,16 @@ class LocationModel(db.Model):
 
     id = db.Column(db.Integer,primary_key=True)
     name = db.Column(db.String(80))
-    multiverse_id = db.Column(db.Integer,db.ForeignKey('multiverse.id'))
-    multiverse = db.relationship('MultiverseModel')
-    objects = db.relationship('ObjectModel')
-    characters = db.relationship('CharacterModel')
     discover_date = db.Column(db.DateTime)
     last_visit = db.Column(db.DateTime)
     danger = db.Column(db.Integer)
+
+    multiverse_id = db.Column(db.Integer,db.ForeignKey('multiverses.id'))
+    #multiverse = db.relationship('MultiverseModel')
+    
+    #objects = db.relationship('ObjectModel')
+    
+    characters = db.relationship('CharacterModel')
 
     def __init__(self, name, multiverse_id):
         self.name = name

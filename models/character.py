@@ -4,14 +4,14 @@ class CharacterModel(db.Model):
 
     __tablename__='characters'
 
-    # Todos los atributos de la clase ItemModel deben estar definidos
     id = db.Column(db.Integer,primary_key=True)
     name = db.Column(db.String(80))
-    location_id = db.Column(db.Integer,db.ForeignKey('location.id'))
-    current_location_id = db.Column(db.Integer,db.ForeignKey('location.id'))
     firs_meet = db.Column(db.DateTime)
     last_meet = db.Column(db.DateTime)
     ocupation = db.Column(db.String(80))
+    location_id = db.Column(db.Integer)
+
+    current_location_id = db.Column(db.Integer,db.ForeignKey('locations.id'))
 
     def __init__(self, name,location_id):
         self.name = name
