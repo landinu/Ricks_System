@@ -1,9 +1,8 @@
-#from werkzeug.security import safe_str_cmp
 from hmac import compare_digest
 from models.user import UserModel
 
 def authenticate (username,password):
-    user = UserModel.find_by_username(username) 
+    user = UserModel.find_by_name(username) 
     if user and compare_digest(user.password, password): # Modo seguro de comparar cadenas, dadas las diferentes codificaciones.
         return user
 
