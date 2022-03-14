@@ -18,9 +18,12 @@ from flask_jwt import JWT
 # RECURSOS
 
 from security import authenticate, identity
-from resources.user import UserRegister
-from resources.item import Item,ItemList
-from resources.store import Store, StoreList
+from resources.user import User, UserRegister, UserList 
+from resources.rol import Rol, RolRegister, RolList
+from resources.location import Location, LocationRegister, LocationList
+from resources.character import Character, CharacterRegister, CharacterList
+#from resources.object import Object, ObjectRegister,ObjectList
+from resources.multiverse import Multiverse, MultiverseRegister, MultiverseList
 
 # DESARROLLO APLICACIÓN
 
@@ -37,11 +40,24 @@ jwt = JWT(app,authenticate,identity) # Crea endpoint /auth para la autenticació
 
 # - Declaración de recursos - Endpoints => http://domain/
 
-api.add_resource(Item,'/item/<string:name>')
-api.add_resource(ItemList,'/items')
+api.add_resource(User,'/user/<string:name>')
 api.add_resource(UserRegister,'/register')
-api.add_resource(Store,'/store/<string:name>')
-api.add_resource(StoreList,'/stores')
+api.add_resource(UserList,'/users')
+api.add_resource(Rol,'/role/<string:name>')
+api.add_resource(RolRegister,'/new-role')
+api.add_resource(RolList,'/roles')
+api.add_resource(Location,'/location/<string:name>')
+api.add_resource(LocationRegister,'/new-location')
+api.add_resource(LocationList,'/locations')
+api.add_resource(Character,'/character/<string:name>')
+api.add_resource(CharacterRegister,'/new-character')
+api.add_resource(CharacterList,'/characters')
+#api.add_resource(Object,'/object/<string:name>')
+#api.add_resource(ObjectRegister,'/new-object')
+#api.add_resource(ObjectList,'/objects')
+api.add_resource(Multiverse,'/multiverse/<string:name>')
+api.add_resource(MultiverseRegister,'/new-multiverse')
+api.add_resource(MultiverseList,'/multiverses')
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True) # debug = True -> Arroja mensajes de error útiles para identificar el problema
