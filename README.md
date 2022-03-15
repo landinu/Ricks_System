@@ -33,3 +33,7 @@ python app.py
 
 Para verificar que funciona correctamente se recomienda utilizar una herramienta externa diseñada específicamente para esto, como Postman o bien desplegar la API en un entorno apropiado como Heroku.
 
+#### Heroku
+
+Es posible desplegar la aplicación creando una nueva api que se vincule con este repositorio, utilizando una base de datos gratuita de JawsDB MySQL. Lo único que se debe considerar es que en el archivo *app.py* se deben comentar las líneas que inicializan la base de datos y crean las tablas correspondientes.
+
