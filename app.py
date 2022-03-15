@@ -71,7 +71,7 @@ def create_tables():
     role = RoleModel("reader")
     role.save_to_db()
 
-    user = UserModel("Ryck","Ryck123",1)
+    user = UserModel("Rick","Rick123",1)
     user.save_to_db()
     user = UserModel("Morty","Morty123",2)
     user.save_to_db()

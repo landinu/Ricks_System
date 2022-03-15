@@ -1,6 +1,8 @@
 from flask_restful import Resource,reqparse
-from flask_jwt import jwt_required
+from flask_jwt import jwt_required, current_identity
 from models.character import CharacterModel
+from models.user import UserModel
+from models.location import LocationModel
 
 class Character(Resource):
 
@@ -25,44 +27,85 @@ class Character(Resource):
 
     @jwt_required()
     def delete(self,name):
-        character = CharacterModel.find_by_name(name)
-        if character:
-            character.delete_from_db()
-            return {'message':'Character {} was deleted'.format(character.name)}
-        return {'message':'Character not found'},404
+        client = str(current_identity).replace('>','')
+        client = client.split()
+        client = UserModel.find_by_id(int(client[1]))
+        if client.role_id == 1:
+            character = CharacterModel.find_by_name(name)
+            if character:
+                character.delete_from_db()
+                return {'message':'Character {} was deleted'.format(character.name)}
+            return {'message':'Character not found'},404
+        else:
+            return {'message':'Operation Unauthorized'},404
 
     @jwt_required()
     def put(self,name):
-        data = Character.parser.parse_args()
-        client = get_jwt_identity()
-        print (client)
-        character = CharacterModel.find_by_name(name)
-        # Falta validar privilegios usuario
-        if character:
-            #character = CharacterModel(name,**data)
-            if data['field'] == 'location_id':
-                character.location_id = data['value']
-            elif data['field'] == 'current_location':
-                character.current_location = data['value']
-            elif data['field'] == 'first_meet':
-                character.first_meet = data['value']
-            elif data['field'] == 'last_meet':
-                character.last_meet = data['value']
-            elif data['field'] == 'ocupation':
-                character.ocupation = data['value']
-            else:
-                return {'message':'Invalid field'},404    
-        return {'message':'Character not found'},404
+
+        client = str(current_identity).replace('>','')
+        client = client.split()
+        client = UserModel.find_by_id(int(client[1]))
+        
+        if client.role_id == 1:
+            
+            data = Character.parser.parse_args()
+            character = CharacterModel.find_by_name(name)
+            if character:
+                if data['field'] == 'location':
+                    location = LocationModel.find_by_name(data['value'])
+                    if location:
+                        character.location_id = location.id
+                        character.save_to_db()
+                        return {"message":"Character updated sucessfully."},201
+                    else:
+                        return {'message':'Location not found'},404
+                elif data['field'] == 'current_location':
+                    location = LocationModel.find_by_name(data['value'])
+                    if location:
+                        character.location_id = location.id
+                        character.save_to_db()
+                        return {"message":"Character updated sucessfully."},201
+                    else:
+                        return {'message':'Location not found'},404
+                elif data['field'] == 'first_meet':
+                    character.first_meet = data['value']
+                    character.save_to_db()
+                    return {"message":"Character updated sucessfully."},201
+                elif data['field'] == 'last_meet':
+                    character.last_meet = data['value']
+                    character.save_to_db()
+                    return {"message":"Character updated sucessfully."},201
+                elif data['field'] == 'ocupation':
+                    character.ocupation = data['value']
+                    character.save_to_db()
+                    return {"message":"Character updated sucessfully."},201
+                else:
+                    return {'message':'Invalid field'},404    
+            return {'message':'Character not found'},404
+        else:
+            return {'message':'Operation Unauthorized'},404
 
     @jwt_required()
     def post(self,name):
-        data = Character.parser.parse_args()
-        if CharacterModel.find_by_name(name):
-            return {"message":"Character already exists."},400
-        # Obtener id de la locacion
-        character = CharacterModel(**data)
-        character.save_to_db()
-        return {"message":"Character created sucessfully."},201
+
+        client = str(current_identity).replace('>','')
+        client = client.split()
+        client = UserModel.find_by_id(int(client[1]))
+        
+        if client.role_id == 1 or client.role_id == 2:
+            
+            data = Character.parser.parse_args()
+            if CharacterModel.find_by_name(name):
+                return {"message":"Character already exists."},400
+            location = LocationModel.find_by_name(data['value'])
+            if location:
+                character = CharacterModel(name,location.id)
+                character.save_to_db()
+                return {"message":"Character created sucessfully."},201
+            else:
+                return {'message':'Location not found'},404
+        else:
+            return {'message':'Operation Unauthorized'},404
 
 class CharacterList(Resource):
     @jwt_required()
